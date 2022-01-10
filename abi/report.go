@@ -122,6 +122,7 @@ func (r Report) Save(path string) error {
 func (r Report) Add(root, path string) error {
 	info, err := os.Lstat(path)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %s\n", path)
 		return nil
 	}
 	return r.walkPivot(root, path, info)
@@ -130,6 +131,7 @@ func (r Report) Add(root, path string) error {
 func (r Report) walkDir(root, path string) error {
 	infos, err := ioutil.ReadDir(path)
 	if err != nil {
+        fmt.Fprintln(os.Stderr, err.Error())
 		return err
 	}
 	for _, info := range infos {
@@ -166,6 +168,7 @@ func (r Report) walkSym(root, path string) error {
 	} // implicit else: abs path outside root
 	info, err := os.Lstat(link)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %s\n", link)
 		return nil
 	}
 	return r.walkPivot(root, link, info)
