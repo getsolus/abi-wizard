@@ -187,6 +187,8 @@ func (r Report) walkFile(root, path string, info os.FileInfo) error {
 		return nil // debug info
 	case strings.HasSuffix(info.Name(), ".debuginfo"):
 		return nil // debug info
+	case strings.HasSuffix(info.Name(), ".cubin"):
+		return nil // CUDA
 	default:
 		f, err := os.Open(path)
 		if err != nil {
