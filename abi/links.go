@@ -46,9 +46,10 @@ func NewLinks() Links {
 
 // Prune removes a set of related Links from another set of links
 func (l Links) Prune(excludes Links) {
-	for lib := range excludes.Libs {
-		delete(l.Libs, lib)
-		delete(l.Syms, lib)
+	excludesKeys := sortedKeys(excludes.Libs)
+	for _, key := range excludesKeys {
+		delete(l.Libs, key)
+		delete(l.Syms, key)
 	}
 }
 
@@ -58,7 +59,9 @@ func (l Links) Resolve(provided Links) (missing []string) {
 	var unknown Symbols
 	for _, missing := range missingSymbols {
 		found := false
-		for lib, symbols := range provided.Syms {
+		providedKeys := sortedKeys(provided.Syms)
+		for _, lib := range providedKeys {
+			symbols := provided.Syms[lib]
 			for _, symbol := range symbols {
 				if symbol == missing {
 					l.Libs[lib]++

@@ -1,3 +1,3 @@
 module github.com/getsolus/abi-wizard
 
-go 1.12
+go 1.21

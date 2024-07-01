@@ -57,8 +57,10 @@ type Report map[string]Arch
 
 // Resolve missing libraries
 func (r Report) Resolve() (missing []string, err error) {
-	for _, arch := range r {
-		missing = append(missing, arch.Resolve()...)
+	reportKeys := sortedKeys(r)
+	for _, key := range reportKeys {
+		val := r[key]
+		missing = append(missing, val.Resolve()...)
 	}
 	var unique []string
 	sort.Strings(missing)
@@ -71,8 +73,8 @@ func (r Report) Resolve() (missing []string, err error) {
 	missing = make([]string, 0)
 	if len(unique) > 0 {
 		r2 := make(Report)
-		for arch := range r {
-			archType := machineTypes[arch]
+		for _, key := range reportKeys {
+			archType := machineTypes[key]
 			for _, dir := range machineLibs[archType] {
 				err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 					if err != nil {
@@ -94,7 +96,8 @@ func (r Report) Resolve() (missing []string, err error) {
 				}
 			}
 		}
-		for name, arch := range r {
+		for _, name := range reportKeys {
+			arch := r[name]
 			unresolved := arch.ResolveMissing(r2[name])
 			for _, lib := range unresolved {
 				if _, ok := arch.Uses.Syms[lib]; !ok {
@@ -109,7 +112,9 @@ func (r Report) Resolve() (missing []string, err error) {
 
 // Save writes a report to disk
 func (r Report) Save(path string) error {
-	for _, arch := range r {
+	reportKeys := sortedKeys(r)
+	for _, key := range reportKeys {
+		arch := r[key]
 		if err := arch.Save(path); err != nil {
 			return err
 		}
