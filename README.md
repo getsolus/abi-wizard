@@ -1,7 +1,7 @@
 # abi-wizard
 Tool for generating ABI reports for libraries and binaries
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/DataDrake/abi-wizard)](https://goreportcard.com/report/github.com/DataDrake/abi-wizard) [![license](https://img.shields.io/github/license/DataDrake/abi-wizard.svg)]() 
+[![Go Report Card](https://goreportcard.com/badge/github.com/getsolus/abi-wizard)](https://goreportcard.com/report/github.com/getsolus/abi-wizard) [![license](https://img.shields.io/github/license/DataDrake/abi-wizard.svg)]()
 
 ## Motivation
 
@@ -10,7 +10,7 @@ As a package maintainer, it's a challenging task to keep track of binary depende
 ## Goals
  * Fast scan times
  * Be completely distro agnostic
- * A+ Rating on [Report Card](https://goreportcard.com/report/github.com/DataDrake/abi-wizard)
+ * A+ Rating on [Report Card](https://goreportcard.com/report/github.com/getsolus/abi-wizard)
  
 ## Installation
 

@@ -18,8 +18,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/DataDrake/abi-wizard/abi"
 	"os"
+
+	"github.com/getsolus/abi-wizard/abi"
 )
 
 func main() {

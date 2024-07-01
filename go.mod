@@ -1,3 +1,3 @@
-module github.com/DataDrake/abi-wizard
+module github.com/getsolus/abi-wizard
 
 go 1.12
