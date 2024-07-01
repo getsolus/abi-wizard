@@ -20,7 +20,6 @@ import (
 	"debug/elf"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -41,11 +40,11 @@ var machineTypes = map[string]elf.Machine{
 
 // machineLibs maps machine type to directories for its libs
 var machineLibs = map[elf.Machine][]string{
-	elf.EM_386: []string{
+	elf.EM_386: {
 		"/lib32",
 		"/usr/lib32",
 	},
-	elf.EM_X86_64: []string{
+	elf.EM_X86_64: {
 		"/lib",
 		"/lib64",
 		"/usr/lib",
@@ -129,14 +128,19 @@ func (r Report) Add(root, path string) error {
 }
 
 func (r Report) walkDir(root, path string) error {
-	infos, err := ioutil.ReadDir(path)
+	infos, err := os.ReadDir(path)
 	if err != nil {
-        fmt.Fprintln(os.Stderr, err.Error())
+		fmt.Fprintln(os.Stderr, err.Error())
 		return err
 	}
 	for _, info := range infos {
 		loc := filepath.Join(path, info.Name())
-		if err = r.walkPivot(root, loc, info); err != nil {
+		f, err := info.Info()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			return err
+		}
+		if err = r.walkPivot(root, loc, f); err != nil {
 			return err
 		}
 	}
@@ -150,7 +154,7 @@ func (r Report) walkPivot(root, path string, info os.FileInfo) error {
 	case info.IsDir():
 		return r.walkDir(root, path)
 	default:
-		return r.walkFile(root, path, info)
+		return r.walkFile(path, info)
 	}
 }
 
@@ -174,7 +178,7 @@ func (r Report) walkSym(root, path string) error {
 	return r.walkPivot(root, link, info)
 }
 
-func (r Report) walkFile(root, path string, info os.FileInfo) error {
+func (r Report) walkFile(path string, info os.FileInfo) error {
 	// ignore statically linked archives or debug symbols
 	switch {
 	case strings.HasSuffix(info.Name(), ".o"):
